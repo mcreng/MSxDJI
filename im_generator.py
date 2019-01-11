@@ -6,8 +6,8 @@ from imgaug import augmenters as iaa
 import matplotlib.pyplot as plt
 import cv2
 
-IMG_PATH = './data/training/'
-GEN_PATH = './generated/training/'
+IMG_PATH = './data/test/'
+GEN_PATH = './generated/test/'
 DIMENSION = (600, 800)
 
 # Get available labels and corresponding number of images
