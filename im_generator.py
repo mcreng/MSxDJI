@@ -51,7 +51,7 @@ def create_image(dataset):
 
         img[thresh == 255] = 0
 
-        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (9, 9))
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (13, 13))
         erosion = cv2.erode(img, kernel, iterations=1)
 
         erosion_gray = cv2.cvtColor(erosion, cv2.COLOR_BGR2GRAY)
