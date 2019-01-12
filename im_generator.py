@@ -1,22 +1,18 @@
 import os
 import json
 
+from tqdm import trange
 import numpy as np
 from imgaug import augmenters as iaa
 import matplotlib.pyplot as plt
 import cv2
 
-IMG_PATH = './data/test/'
-GEN_PATH = './generated/test/'
+IMG_PATH = './data/'
+GEN_PATH = './generated/'
 DIMENSION = (600, 800)
 
-# Get available labels and corresponding number of images
-labels = [(a.replace(IMG_PATH, ''), len(c))
-          for a, b, c in os.walk(IMG_PATH)][1:]
-# [('apple', 1905), ('banana', 940), ('mango', 490), ('pear', 1472), ('pomelo', 450)]
 
-
-def create_image():
+def create_image(dataset):
     """
     A procedure that takes in multiple fruit images, augment them and put them randomly in a DIMENSION-sized image.
 
@@ -24,9 +20,12 @@ def create_image():
         img (np.ndarray): Syntheized image.
         annos (list): Bounding boxes and ids of the fruits. Format: ( (fruit_id, (x, y, w, h)), ... )
     """
-
+    # Get available labels and corresponding number of images
+    labels = [(a.replace(IMG_PATH+dataset, ''), len(c))
+              for a, b, c in os.walk(IMG_PATH+dataset)][1:]
     # Image generation configurations
-    fruit_cnt = np.random.randint(1, 4)  # [1, 4), number of fruits to appear
+    # [1, 4), number of fruits to appear
+    fruit_cnt = np.random.randint(1, 4)
     fruit_ids = np.random.randint(0, len(labels), size=(
         fruit_cnt,))  # ids of fruits to appear
     fruit_imgs = np.array([str(np.random.randint(0, labels[i][1])).zfill(4)
@@ -34,7 +33,7 @@ def create_image():
 
     # Read images
     imgs = [cv2.imread(os.path.join(
-            IMG_PATH, labels[idx][0], img+'.jpg')) for idx, img in zip(fruit_ids, fruit_imgs)]
+            IMG_PATH+dataset, labels[idx][0], img+'.jpg')) for idx, img in zip(fruit_ids, fruit_imgs)]
 
     def remove_background(img):
         """
@@ -145,10 +144,20 @@ def create_image():
 
 
 if __name__ == "__main__":
-    all_annos = {}
-    for i in range(1000):
-        img, annos = create_image()
-        cv2.imwrite(GEN_PATH+('{0:04d}'.format(i))+'.png', img)
-        all_annos['{0:04d}'.format(i)] = annos
-    with open(GEN_PATH+'anno.json', 'w') as f:
-        json.dump(all_annos, f)
+    for dataset in ['training/', 'test/']:
+        print('Generating data in', dataset+'.')
+        all_annos = {}
+        for i in trange(1000):
+            img, annos = create_image(dataset)
+            cv2.imwrite(GEN_PATH+dataset+('{0:04d}'.format(i))+'.png', img)
+            all_annos['{0:04d}'.format(i)] = annos
+        with open(GEN_PATH+dataset+'anno.json', 'w') as f:
+            json.dump(all_annos, f)
+
+        # Get available labels and corresponding number of images
+        labels = [(a.replace(IMG_PATH+dataset, ''), len(c))
+                  for a, b, c in os.walk(IMG_PATH+dataset)][1:]
+
+        idx2fruit = [{idx: label[0]} for idx, label in enumerate(labels)]
+        with open(GEN_PATH+'id.json', 'w') as f:
+            json.dump(idx2fruit, f)
