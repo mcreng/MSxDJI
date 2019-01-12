@@ -138,7 +138,7 @@ def create_image():
         # adding bbox param specifying bounding box (x, y, w, h)
         imgs_aug[idx]['bbox'] = (x, y, *imgs_aug[idx]['size'])
 
-    annos = [(int(fruit_ids[idx]), x['bbox'])
+    annos = [{'id': int(fruit_ids[idx]), 'bbox': x['bbox']}
              for idx, x in enumerate(imgs_aug)]
 
     return output, annos
