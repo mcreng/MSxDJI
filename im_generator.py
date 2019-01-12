@@ -90,7 +90,7 @@ def create_image():
 
         Return:
             img (np.ndarray): Cropped image.
-            (tuple): Rectangle defining the bounding box.
+            (tuple): Image size.
             mask (np.ndarray): Fruit mask in image.
         """
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -103,7 +103,12 @@ def create_image():
         cropped_gray = cv2.cvtColor(img[y:y+h, x:x+w], cv2.COLOR_BGR2GRAY)
         _, cropped_thresh = cv2.threshold(
             cropped_gray, 1, 255, cv2.THRESH_BINARY)
-        return img[y:y+h, x:x+w], (x, y, w, h), cropped_thresh
+
+        return {
+            "img": img[y:y+h, x:x+w],
+            "size": (w, h),
+            "thresh": cropped_thresh
+        }
 
     # Get cropped images and bounding boxes
     imgs_aug = list(map(get_bounding_box, imgs_aug))
@@ -111,14 +116,14 @@ def create_image():
     # create new image
     output = np.zeros((*DIMENSION, 4), np.uint8)
 
-    place_pts = [(np.random.randint(0, DIMENSION[1] - imgs_aug[i][1][2]),
-                  np.random.randint(0, DIMENSION[0] - imgs_aug[i][1][3])) for i in range(len(imgs_aug))]  # the top left corner of where the images should be placed.
+    place_pts = [(np.random.randint(0, DIMENSION[1] - imgs_aug[i]['size'][0]),
+                  np.random.randint(0, DIMENSION[0] - imgs_aug[i]['size'][1])) for i in range(len(imgs_aug))]  # the top left corner of where the images should be placed.
 
     # Place the images at designated positions, allow overlapping
     for idx, (x, y) in enumerate(place_pts):
-        roi = output[y:y+imgs_aug[idx][1][3], x:x +
-                     imgs_aug[idx][1][2]]
-        mask = imgs_aug[idx][2]
+        roi = output[y:y+imgs_aug[idx]['size'][1], x:x +
+                     imgs_aug[idx]['size'][0]]
+        mask = imgs_aug[idx]['thresh']
         mask_inv = cv2.bitwise_not(mask)
 
         # Now black-out the area of fruits in ROI
@@ -126,13 +131,17 @@ def create_image():
 
         # Take only region of fruit from fruit image.
         img2_fg = cv2.bitwise_and(
-            imgs_aug[idx][0], imgs_aug[idx][0], mask=mask)
-        output[y:y+imgs_aug[idx][1][3], x:x +
-               imgs_aug[idx][1][2]] = cv2.add(img1_bg, img2_fg)
+            imgs_aug[idx]['img'], imgs_aug[idx]['img'], mask=mask)
+        output[y:y+imgs_aug[idx]['size'][1], x:x +
+               imgs_aug[idx]['size'][0]] = cv2.add(img1_bg, img2_fg)
 
-    annos = [(int(fruit_ids[idx]), x[1]) for idx, x in enumerate(imgs_aug)]
+        # adding bbox param specifying bounding box (x, y, w, h)
+        imgs_aug[idx]['bbox'] = (x, y, *imgs_aug[idx]['size'])
 
-    return output, list(annos)
+    annos = [(int(fruit_ids[idx]), x['bbox'])
+             for idx, x in enumerate(imgs_aug)]
+
+    return output, annos
 
 
 if __name__ == "__main__":
