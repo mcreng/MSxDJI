@@ -142,15 +142,65 @@ def create_image(dataset):
 
     return output, annos
 
+def from_yolo_to_cor(box, shape):
+    img_h, img_w = shape
+    # x1, y1 = ((x + witdth)/2)*img_width, ((y + height)/2)*img_height
+    # x2, y2 = ((x - witdth)/2)*img_width, ((y - height)/2)*img_height
+    x1, y1 = int((box[0] + box[2]/2)*img_w), int((box[1] + box[3]/2)*img_h)
+    x2, y2 = int((box[0] - box[2]/2)*img_w), int((box[1] - box[3]/2)*img_h)
+    return x1, y1, x2, y2
+    
+def draw_boxes(img, boxes):
+    for box in boxes:
+        x1, y1, x2, y2 = from_yolo_to_cor(box, DIMENSION)
+        print("recovered box")
+        print((x2, y2, x1 -x2, y1-y2))
+        cv2.rectangle(img, (x1, y1), (x2, y2), (255,0,0), 3)
+    plt.imshow(img)
+    plt.show()
+
 
 if __name__ == "__main__":
+    nSamples = 100
     for dataset in ['training/', 'test/']:
         print('Generating data in', dataset+'.')
         all_annos = {}
-        for i in trange(1000):
+        for i in trange(nSamples):
             img, annos = create_image(dataset)
-            cv2.imwrite(GEN_PATH+dataset+('{0:04d}'.format(i))+'.png', img)
+            cv2.imwrite(GEN_PATH+dataset+dataset.replace("/","") + ('{0:04d}'.format(i))+'.png', img)
             all_annos['{0:04d}'.format(i)] = annos
+            # print("annos format")
+            # print(annos)
+
+            # output data in normalised Yolo format 
+            filename = GEN_PATH+dataset+dataset.replace("/","") + ('{0:04d}'.format(i))+'.txt'
+            os.makedirs(os.path.dirname(filename), exist_ok=True)
+            # boxes = []
+            with open(filename, 'w') as f:
+                for anno in annos:
+                    id = str(anno['id'])
+                    x, y, w, h = anno['bbox']
+                    dh = 1./DIMENSION[0]
+                    dw = 1./DIMENSION[1]
+                    x += w/2.0
+                    y += h/2.0
+                    x = x * dw
+                    w = w * dw
+                    y = y * dh
+                    h = h * dh
+                    data = str(id)+" "+str(x)+" "+str(y)+" "+str(w)+" "+str(h)+"\n"
+                    f.write(data)
+            #         boxes.append((x,y,w,h))
+            # print("boxes")
+            # print(boxes)
+            # draw_boxes(img,boxes)
+            
+        # output training.txt and test.txt
+        filename = GEN_PATH+dataset.replace("/", ".txt")
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        with open(filename, 'w') as f:
+            for i in trange(nSamples):
+                f.write("data/obj/"+dataset.replace("/","")+('{0:04d}'.format(i))+'.png\n')
         with open(GEN_PATH+dataset+'anno.json', 'w') as f:
             json.dump(all_annos, f)
 
