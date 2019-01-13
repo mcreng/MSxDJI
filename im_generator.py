@@ -126,7 +126,9 @@ def create_image(dataset):
                imgs_aug[idx]['size'][0]] = cv2.add(img1_bg, img2_fg)
 
         # adding bbox param specifying bounding box (x, y, w, h)
-        imgs_aug[idx]['bbox'] = (x, y, *imgs_aug[idx]['size'])
+        imgs_aug[idx]['bbox'] = (x/DIMENSION[1], y/DIMENSION[0],
+                                 imgs_aug[idx]['size'][0]/DIMENSION[1],
+                                 imgs_aug[idx]['size'][1]/DIMENSION[0])
 
     annos = [{'id': int(fruit_ids[idx]), 'bbox': x['bbox']}
              for idx, x in enumerate(imgs_aug)]
