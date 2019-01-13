@@ -1,4 +1,4 @@
-# Upload tagged images on Custom Vsision platform
+# Upload tagged images to Custom Vsision platform
 
 1. Run `pip install azure-cognitiveservices-vision-customvision`.
 2. Download and extract "generated" folder to the root of this project.
