@@ -115,8 +115,8 @@ def create_image(dataset):
     # create new image
     output = np.zeros((*DIMENSION, 4), np.uint8)
 
-    place_pts = [(np.random.randint(0, DIMENSION[1] - imgs_aug[i]['size'][0]),
-                  np.random.randint(0, DIMENSION[0] - imgs_aug[i]['size'][1])) for i in range(len(imgs_aug))]  # the top left corner of where the images should be placed.
+    place_pts = [(np.random.randint(0, DIMENSION[1] - imgs_aug[i]['size'][0]), np.random.randint(0, DIMENSION[0] - imgs_aug[i]['size'][1]))
+                 for i in range(len(imgs_aug))]  # the top left corner of where the images should be placed.
 
     # Place the images at designated positions, allow overlapping
     for idx, (x, y) in enumerate(place_pts):
@@ -158,6 +158,6 @@ if __name__ == "__main__":
         labels = [(a.replace(IMG_PATH+dataset, ''), len(c))
                   for a, b, c in os.walk(IMG_PATH+dataset)][1:]
 
-        idx2fruit = [{idx: label[0]} for idx, label in enumerate(labels)]
+        idx2fruit = {idx: label[0] for idx, label in enumerate(labels)}
         with open(GEN_PATH+'id.json', 'w') as f:
             json.dump(idx2fruit, f)
