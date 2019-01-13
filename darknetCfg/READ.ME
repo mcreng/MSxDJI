@@ -1,16 +1,21 @@
-Place the yolo-obj.cfg in the darknet/cfg
+Steps:
 
-Place the 
+1)Place the yolo-obj.cfg in the darknet/cfg
+
+2) Place the 
  fruits-obj.data
  fruits-obg.names 
  test.txt
  training.txt
 in build\darknet\x64\data\
 
-Place all the training and test image files and txt files in build\darknet\x64\data\obj\
+3) Place all the training and test image files and txt files in build\darknet\x64\data\obj\
 
-Download pre-trained weights for the convolutional layers (154 MB): https://pjreddie.com/media/files/darknet53.conv.74 and put to the directory build\darknet\x64
+4) Download pre-trained weights for the convolutional layers (154 MB): https://pjreddie.com/media/files/darknet53.conv.74 and put to the directory build\darknet\x64
 
-Start training by using the command line: darknet.exe detector train data/obj.data cfg/yolo-obj.cfg darknet53.conv.74
+5) Start training by using the command line: darknet.exe detector train data/fruits-obj.data cfg/yolo-obj.cfg darknet53.conv.74
 
-To train on Linux use command: ./darknet detector train data/obj.data cfg/yolo-obj.cfg darknet53.conv.74 (just use ./darknet instead of darknet.exe)
+5) To train on Linux use command: ./darknet detector train data/fruits-obj.data cfg/yolo-obj.cfg darknet53.conv.74 (just use ./darknet instead of darknet.exe)
+
+References:
+https://github.com/AlexeyAB/darknet
