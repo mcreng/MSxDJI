@@ -35,7 +35,7 @@ def create_image(dataset):
     imgs = [cv2.imread(os.path.join(
             IMG_PATH+dataset, labels[idx][0], img+'.jpg')) for idx, img in zip(fruit_ids, fruit_imgs)]
 
-    def remove_background(img):
+    def remove_background(src):
         """
         Subroutine that remove the white backgrounds of the images.
 
@@ -45,23 +45,14 @@ def create_image(dataset):
         Returns:
             (np.ndarray): Image with background removed.
         """
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-        ret, thresh = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY)
-
-        img[thresh == 255] = 0
-
-        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (17, 17))
-        erosion = cv2.erode(img, kernel, iterations=1)
-
-        erosion_gray = cv2.cvtColor(erosion, cv2.COLOR_BGR2GRAY)
-
-        _, alpha = cv2.threshold(erosion_gray, 0, 255, cv2.THRESH_BINARY)
-        b, g, r = cv2.split(erosion)
+        tmp = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
+        _, alpha = cv2.threshold(tmp, 250, 255, cv2.THRESH_BINARY_INV)
+        b, g, r = cv2.split(src)
         rgba = [b, g, r, alpha]
         dst = cv2.merge(rgba, 4)
+        dst[dst[:, :, 3] == 0] = 0
         return dst
-        # return erosion
 
     # Remove all backgrounds
     imgs = list(map(remove_background, imgs))
@@ -70,7 +61,7 @@ def create_image(dataset):
     seq = iaa.Sequential([
         iaa.Affine(scale={"x": (0.8, 1.2), "y": (0.8, 1.2)},
                    rotate=(-90, 90),
-                   shear=(-8, 8),
+                   #    shear=(-8, 8),
                    fit_output=True),  # affine transformations
         iaa.Fliplr(0.5),  # horizontally flip 50% of the images
         iaa.Flipud(0.5),  # vertically flip 50% of the images
