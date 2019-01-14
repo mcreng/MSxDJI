@@ -30,7 +30,6 @@ def create_image(dataset):
         fruit_cnt,))  # ids of fruits to appear
     fruit_imgs = np.array([str(np.random.randint(0, labels[i][1])).zfill(4)
                            for i in fruit_ids])  # imgs of fruits to appear
-
     # Read images
     imgs = [cv2.imread(os.path.join(
             IMG_PATH+dataset, labels[idx][0], img+'.jpg')) for idx, img in zip(fruit_ids, fruit_imgs)]
@@ -87,8 +86,9 @@ def create_image(dataset):
         _, thresh = cv2.threshold(gray, 1, 255, cv2.THRESH_BINARY)
         contours, hierarchy = cv2.findContours(
             thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2:]
-        cnt = contours[0]
-        x, y, w, h = cv2.boundingRect(cnt)
+        # always get the largest contours
+        c = max(contours, key=cv2.contourArea)
+        x, y, w, h = cv2.boundingRect(c)
 
         cropped_gray = cv2.cvtColor(img[y:y+h, x:x+w], cv2.COLOR_BGR2GRAY)
         _, cropped_thresh = cv2.threshold(
@@ -133,6 +133,10 @@ def create_image(dataset):
     annos = [{'id': int(fruit_ids[idx]), 'bbox': x['bbox']}
              for idx, x in enumerate(imgs_aug)]
 
+    ms_colors = [(0, 187, 255), (0, 187, 124),
+                 (241, 161, 0), (20, 83, 246)]  # in BGR
+    color_idx = np.random.randint(0, 4)  # [0, 4)
+    output[output[:, :, 3] == 0] = (*ms_colors[color_idx], 255)
     return output, annos
 
 
