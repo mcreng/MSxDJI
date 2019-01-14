@@ -136,7 +136,7 @@ def create_image(dataset):
     ms_colors = [(0, 187, 255), (0, 187, 124),
                  (241, 161, 0), (20, 83, 246)]  # in BGR
     color_idx = np.random.randint(0, 4)  # [0, 4)
-    output[output[:, :, 3] == 0] = (*ms_colors[color_idx], 255)
+    output[output[:, :, 3] <= 100] = (*ms_colors[color_idx], 255)
     return output, annos
 
 
