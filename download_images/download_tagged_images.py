@@ -6,6 +6,7 @@ import sys
 import requests
 import argparse
 import math
+import os
 
 
 if __name__ == "__main__":
@@ -26,6 +27,7 @@ if __name__ == "__main__":
     training_key = opt.training_key
     project_id = opt.project_id
     IMAGES_PATH = opt.result_path
+    os.makedirs(IMAGES_PATH, exist_ok=True)
 
     trainer = CustomVisionTrainingClient(training_key, endpoint=ENDPOINT)
 
