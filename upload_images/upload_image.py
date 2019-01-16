@@ -8,27 +8,27 @@ import math
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-training_key", default=None, required=True,
-                        help="Please provide your training key on https://customvision.ai/")
-    parser.add_argument("-project_id", default=None, required=False,
-                        help="Please provide the project id of the project that you want to work on"
-                        )
-    parser.add_argument("-image_path", default=None, required=True,
-                        help="Please provide the absolute or relative path where the images locate"
-                        )
-    parser.add_argument("-file_ext", default=None, required=True,
-                        help="Please provide the file_ext for image files"
-                        )
-    opt = parser.parse_args()
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument("-training_key", default=None, required=True,
+    #                     help="Please provide your training key on https://customvision.ai/")
+    # parser.add_argument("-project_id", default=None, required=False,
+    #                     help="Please provide the project id of the project that you want to work on"
+    #                     )
+    # parser.add_argument("-image_path", default=None, required=True,
+    #                     help="Please provide the absolute or relative path where the images locate"
+    #                     )
+    # parser.add_argument("-file_ext", default=None, required=True,
+    #                     help="Please provide the file_ext for image files"
+    #                     )
+    # opt = parser.parse_args()
 
     ENDPOINT = "https://southcentralus.api.cognitive.microsoft.com"
 
     # Replace with a valid key
-    training_key = opt.training_key
-    project_id = opt.project_id
-    IMAGES_PATH = opt.image_path
-    FILE_EXT = opt.file_ext
+    training_key = "078c6322ffed4057ac886d4b2051fa0c" # opt.training_key
+    project_id = "a100d5d6-36f1-438f-9807-8dab8ac12158" # opt.project_id
+    IMAGES_PATH = "D:/Github/MSxDJI/vott_to_azure/vott_tagged_file/data/obj" # opt.image_path
+    FILE_EXT = "jpg" # opt.file_ext
     trainer = CustomVisionTrainingClient(training_key, endpoint=ENDPOINT)
 
     if project_id == None:
