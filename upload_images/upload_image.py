@@ -5,30 +5,31 @@ import json
 import sys
 import argparse
 import math
+import time
 
 
 if __name__ == "__main__":
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument("-training_key", default=None, required=True,
-    #                     help="Please provide your training key on https://customvision.ai/")
-    # parser.add_argument("-project_id", default=None, required=False,
-    #                     help="Please provide the project id of the project that you want to work on"
-    #                     )
-    # parser.add_argument("-image_path", default=None, required=True,
-    #                     help="Please provide the absolute or relative path where the images locate"
-    #                     )
-    # parser.add_argument("-file_ext", default=None, required=True,
-    #                     help="Please provide the file_ext for image files"
-    #                     )
-    # opt = parser.parse_args()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-training_key", default=None, required=True,
+                        help="Please provide your training key on https://customvision.ai/")
+    parser.add_argument("-project_id", default=None, required=False,
+                        help="Please provide the project id of the project that you want to work on"
+                        )
+    parser.add_argument("-image_path", default=None, required=True,
+                        help="Please provide the absolute or relative path where the images locate"
+                        )
+    parser.add_argument("-file_ext", default=None, required=True,
+                        help="Please provide the file_ext for image files"
+                        )
+    opt = parser.parse_args()
 
     ENDPOINT = "https://southcentralus.api.cognitive.microsoft.com"
 
     # Replace with a valid key
-    training_key = "078c6322ffed4057ac886d4b2051fa0c" # opt.training_key
-    project_id = "b19fda37-c23d-4365-a6b9-c709e73d27ad" # opt.project_id
-    IMAGES_PATH = "D:/Github/MSxDJI/vott_to_azure/vott_tagged_file/data/obj" # opt.image_path
-    FILE_EXT = "jpg" # opt.file_ext
+    training_key = opt.training_key
+    project_id = opt.project_id
+    IMAGES_PATH = opt.image_path
+    FILE_EXT = opt.file_ext
     trainer = CustomVisionTrainingClient(training_key, endpoint=ENDPOINT)
 
     if project_id == None:
@@ -79,12 +80,12 @@ if __name__ == "__main__":
 
     print("Adding images...")
     print("%d images in total" % len(images))
-    SEND_BY_BATCH = 50
+    SEND_BY_BATCH = 64
     print("Send by batch =", SEND_BY_BATCH)
     tagged_images_with_regions = []
     BATCH_NUM = math.ceil(len(images)/SEND_BY_BATCH)
     for i in range(BATCH_NUM):
-        for file_name, regions in images[i:(i+1)*SEND_BY_BATCH]:
+        for file_name, regions in images[i*SEND_BY_BATCH:(i+1)*SEND_BY_BATCH]:
             regions_saved = []
             for r in regions:
                 x, y, w, h = r[1:]
@@ -99,6 +100,7 @@ if __name__ == "__main__":
                 )
         print("Batch no.", i)
         trainer.create_images_from_files(project_id, images=tagged_images_with_regions)
+        time.sleep(10)
         tagged_images_with_regions = []
 
 # try to upload generated images
