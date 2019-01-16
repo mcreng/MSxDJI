@@ -5,7 +5,6 @@ import json
 import sys
 import argparse
 import math
-import time
 
 
 if __name__ == "__main__":
@@ -100,7 +99,6 @@ if __name__ == "__main__":
                 )
         print("Batch no.", i)
         trainer.create_images_from_files(project_id, images=tagged_images_with_regions)
-        time.sleep(10)
         tagged_images_with_regions = []
 
 # try to upload generated images
