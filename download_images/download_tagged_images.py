@@ -29,6 +29,7 @@ if __name__ == "__main__":
     IMAGES_PATH = opt.result_path
     os.makedirs(IMAGES_PATH, exist_ok=True)
 
+
     trainer = CustomVisionTrainingClient(training_key, endpoint=ENDPOINT)
 
     tagged_image_count = trainer.get_tagged_image_count(project_id)

@@ -1,0 +1,15 @@
+data/obj/00019.jpg
+data/obj/00005.jpg
+data/obj/00010.jpg
+data/obj/00008.jpg
+data/obj/00012.jpg
+data/obj/00007.jpg
+data/obj/00004.jpg
+data/obj/00003.jpg
+data/obj/00006.jpg
+data/obj/00014.jpg
+data/obj/00009.jpg
+data/obj/00016.jpg
+data/obj/00017.jpg
+data/obj/00001.jpg
+data/obj/00015.jpg
