@@ -15,7 +15,13 @@ def vott_to_azure():
                     while line:
                         data = {}
                         data["id"] = line[0]
-                        data["bbox"] = [float(value) for value in line[1:5]]
+                        x = float(line[1])
+                        y = float(line[2])
+                        w = float(line[3])
+                        h = float(line[4])
+                        x = x - w / 2.
+                        y = y - h / 2.
+                        data["bbox"] = [x, y, w, h]
                         data_list.append(data)
                         line = f_in.readline()
                 json_struct[file.replace(".txt","")] = data_list

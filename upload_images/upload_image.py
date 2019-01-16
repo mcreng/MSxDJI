@@ -26,7 +26,7 @@ if __name__ == "__main__":
 
     # Replace with a valid key
     training_key = "078c6322ffed4057ac886d4b2051fa0c" # opt.training_key
-    project_id = "a100d5d6-36f1-438f-9807-8dab8ac12158" # opt.project_id
+    project_id = "b19fda37-c23d-4365-a6b9-c709e73d27ad" # opt.project_id
     IMAGES_PATH = "D:/Github/MSxDJI/vott_to_azure/vott_tagged_file/data/obj" # opt.image_path
     FILE_EXT = "jpg" # opt.file_ext
     trainer = CustomVisionTrainingClient(training_key, endpoint=ENDPOINT)
