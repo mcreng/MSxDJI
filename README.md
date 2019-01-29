@@ -2,6 +2,8 @@
 
 > Result: Champion
 
+> Media coverage: [unwire.pro](https://unwire.pro/2019/01/23/it-education/news/) (in Chinese), [dji](https://www.dji.com/hk/newsroom/news/hk-first-ai-x-drones-joint-university-competition) (in Chinese)
+
 This repository stores files used in the [Microsoft x DJI Drones Joint Universities Competition](https://www.dji.com/hk/newsroom/news/hk-first-ai-x-drones-joint-university-competition) in Hong Kong in Jan., 2019. There is only one week of preparation time for this competition so please do not mind the messiness of our repository.
 
 The competition requires contestants to develop a neural network, which is then applied to a DJI Phantom 4 Pro. The network is required to identify and locate the fruits laid on a Microsoft logo. One may the more details in the slides below.
