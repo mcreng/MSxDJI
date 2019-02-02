@@ -14,10 +14,10 @@ if __name__ == "__main__":
     parser.add_argument("-training_key", default=None, required=True,
                         help="Please provide your training key on https://customvision.ai/")
     parser.add_argument("-project_id", default=None, required=True,
-                        help="Please provide the project id of the project that you want to work on"
+                        help="Please provide the project id of the project that you want to work on."
                         )
     parser.add_argument("-result_path", default=None, required=True,
-                        help="Please provide the absolute or relative path where the download items go"
+                        help="Please provide the absolute or relative path where the download items go."
                         )
     opt = parser.parse_args()
 
