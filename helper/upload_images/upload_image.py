@@ -10,15 +10,15 @@ import math
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-training_key", default=None, required=True,
-                        help="Please provide your training key on https://customvision.ai/")
+                        help="Please provide your training key on https://customvision.ai/.")
     parser.add_argument("-project_id", default=None, required=False,
-                        help="Please provide the project id of the project that you want to work on"
-                        )
+                        help="Please provide the project id of the project that you want to work on. " +
+                        "If this is not provided, we will make a new project for you.")
     parser.add_argument("-image_path", default=None, required=True,
-                        help="Please provide the absolute or relative path where the images locate"
+                        help="Please provide the absolute or relative path where the images locate."
                         )
     parser.add_argument("-file_ext", default=None, required=True,
-                        help="Please provide the file_ext for image files"
+                        help="Please provide the file_ext for image files."
                         )
     opt = parser.parse_args()
 
@@ -30,6 +30,11 @@ if __name__ == "__main__":
     IMAGES_PATH = opt.image_path
     FILE_EXT = opt.file_ext
     trainer = CustomVisionTrainingClient(training_key, endpoint=ENDPOINT)
+
+    with open('../id.json', 'r') as f:
+        index_to_class = json.load(f)
+
+    all_tag_names = [s.capitalize() for s in sorted(list(index_to_class.values()))]
 
     if project_id == None:
         # Select the object detection (compact) domain
@@ -48,17 +53,10 @@ if __name__ == "__main__":
                 "It seems that you have the project already. (or it can be other error.)")
 
         # Make tags in the new project
-        all_tags = [trainer.create_tag(project.id, "Apple"),
-                    trainer.create_tag(project.id, "Banana"),
-                    trainer.create_tag(project.id, "Mango"),
-                    trainer.create_tag(project.id, "Pear"),
-                    trainer.create_tag(project.id, "Pomelo")
-                    ]
+        all_tags = [trainer.create_tag(project.id, s) for s in all_tag_names]
     else:
         all_tags = trainer.get_tags(project_id)
 
-    with open('../id.json', 'r') as f:
-        index_to_class = json.load(f)
     tag_name_to_id = {t.name.lower(): t.id for t in all_tags}
     tag_index_to_id = {
         index: tag_name_to_id[v.lower()] for index, v in index_to_class.items()}
@@ -66,16 +64,11 @@ if __name__ == "__main__":
     with open(IMAGES_PATH+"/anno.json") as data_file:
         data = json.load(data_file)
 
-    # DIMENSION = (600, 800)
-
-    # # transform to normalized coordinate
-    # print("Transforming images...")
     images = []
     for k, v in data.items():
         regions_lis = []
         for r in v:
             ind, x, y, w, h = r['id'], *r['bbox']
-            # regions_lis.append((ind, x/DIMENSION[1], y/DIMENSION[0], w/DIMENSION[1], h/DIMENSION[0]))
             regions_lis.append((ind, x, y, w, h))
         images.append((k, regions_lis))
 
