@@ -5,4 +5,4 @@ Prerequisite:
 - `pip install azure-cognitiveservices-vision-customvision`
 - Ensure the "id.json" file contains the correct id to class mapping.
 
-Run `python upload_images.py -training_key <training_key> -project_id <project_id> -result_path <result_path>`.
+Run `python download_tagged_images.py -training_key <training_key> -project_id <project_id> -result_path <result_path>`.
